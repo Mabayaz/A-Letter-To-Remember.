@@ -17,19 +17,13 @@ body {
 /* --- BACKGROUND SLIDESHOW --- */
 .background {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
+  inset: 0;
   z-index: -2;
 }
 
 .background img {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -53,7 +47,7 @@ body {
   z-index: -1;
 }
 
-/* --- ANIMATED TITLE (Centered & Stacked) --- */
+/* --- ANIMATED TITLE --- */
 #hedlinecontainer {
   width: 100%;
   display: flex;
@@ -62,27 +56,20 @@ body {
   margin-bottom: 30px;
   padding: 0 10px;
   box-sizing: border-box;
+  z-index: 5;
 }
 
 #shine {
-  /* clamp makes it big on PC, smaller on phones so it doesn't break weirdly */
   font-size: clamp(22px, 4.5vw, 45px); 
   font-weight: bold;
-  line-height: 1.2; /* Keeps the two lines close together */
-  background: linear-gradient(
-    90deg,
-    #ff8fb1,
-    #ffb3c6,
-    #ffffff,
-    #ffb3c6,
-    #ff8fb1
-  );
+  line-height: 1.2;
+  background: linear-gradient(90deg, #ff8fb1, #ffb3c6, #ffffff, #ffb3c6, #ff8fb1);
   background-size: 200% auto;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shineMove 4s linear infinite;
-  text-align: center; /* This is the key for the centering */
+  text-align: center;
 }
 
 @keyframes shineMove {
@@ -90,31 +77,29 @@ body {
   100% { background-position: -200% center; }
 }
 
-#shine::after {
-  content: " ";
-  display: inline-block;
-  animation: heartbeat 1.4s ease-in-out infinite;
-}
-
-/* --- PHOTO GALLERY STACK --- */
+/* --- PHOTO GALLERY CONTAINER (Centered Fix) --- */
 .gallery {
-  position: relative;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -45%); 
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 90vw;
-  max-height: 70vh;
-  flex-grow: 1;
+  z-index: 10;
+  will-change: transform; /* Smoothness Fix */
 }
 
 .photo {
   position: absolute;
-  width: 200px;
-  max-width: 80vw;
-  height: 200px;
-  max-height: 60vh;
+  width: 250px;
+  height: 250px; 
   display: none;
-  transition: transform 0.4s ease;
+  /* GPU-Accelerated Transitions */
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .photo.active {
@@ -124,16 +109,15 @@ body {
 .photo img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Keeps stack uniform */
   background: #fff;
   border: 10px solid #fff;
   border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(255, 105, 135, 0.25);
+  box-shadow: 0 10px 30px rgba(255, 105, 135, 0.3);
   cursor: pointer;
-  transition: 0.4s ease;
 }
 
-/* STACK ROTATION */
+/* --- STACK ROTATION --- */
 .photo:nth-child(1) { transform: rotate(2deg); }
 .photo:nth-child(2) { transform: rotate(-2deg); }
 .photo:nth-child(3) { transform: rotate(3deg); }
@@ -145,16 +129,15 @@ body {
 .photo:nth-child(9) { transform: rotate(1deg); }
 .photo:nth-child(10){ transform: rotate(-1deg); }
 
-/* --- ENLARGED PHOTO VIEW --- */
+/* --- ENLARGED PHOTO VIEW (Show Whole Picture) --- */
 .photo.enlarged {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(0deg) !important;
-  width: 80vw;
-  max-width: 500px;
-  height: auto;
-  max-height: 90vh;
+  transform: translate3d(-50%, -50%, 0) rotate(0deg) !important;
+  width: 85vw;
+  max-width: 450px;
+  height: auto; 
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -164,8 +147,8 @@ body {
 .photo.enlarged img {
   width: 100%;
   height: auto;
-  max-height: 55vh;
-  object-fit: contain;
+  max-height: 50vh;
+  object-fit: contain; /* Shows full image when clicked */
   border: 8px solid #fff;
 }
 
@@ -173,8 +156,8 @@ body {
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4); 
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5); 
+  backdrop-filter: blur(10px);
   z-index: -1;
 }
 
@@ -185,7 +168,7 @@ body {
 
 .photo.enlarged .caption {
   display: block;
-  margin-top: 20px;
+  margin-top: 15px;
   background: linear-gradient(135deg, #ffffff 0%, #fff0f3 100%);
   padding: 20px;
   border-radius: 15px;
@@ -194,15 +177,15 @@ body {
   box-shadow: 0 10px 25px rgba(255, 143, 177, 0.2);
   font-family: 'Georgia', serif;
   font-style: italic;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.6;
   color: #5a3e45;
   text-align: center;
   width: 100%;
   box-sizing: border-box;
-  max-height: 30vh;
+  max-height: 25vh;
   overflow-y: auto;
-  animation: fadeInText 0.8s ease-out forwards;
+  animation: fadeInText 0.6s ease-out forwards;
 }
 
 .photo.enlarged .caption::before {
@@ -218,20 +201,13 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.photo.enlarged .caption::-webkit-scrollbar {
-  width: 6px;
-}
-.photo.enlarged .caption::-webkit-scrollbar-thumb {
-  background: #ffb3c6;
-  border-radius: 10px;
-}
-
-/* --- NAVIGATION BUTTONS (EDGE FIXED) --- */
+/* --- NAVIGATION BUTTONS --- */
 .nav-btn {
-  position: fixed; /* Changed to fixed to pin to screen edge */
+  position: fixed; 
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.8);
+  z-index: 2000;
+  background: rgba(255, 255, 255, 0.9);
   border: none;
   width: 55px;
   height: 55px;
@@ -239,9 +215,8 @@ body {
   font-size: 28px;
   color: #ff8fb1;
   cursor: pointer;
-  z-index: 2000; /* High z-index to stay on top */
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  transition: 0.3s;
+  transition: 0.3s ease;
 }
 
 .nav-btn:hover {
@@ -249,25 +224,21 @@ body {
   color: white;
 }
 
-.left-btn { left: 20px; } /* Set to screen edge */
-.right-btn { right: 20px; } /* Set to screen edge */
+.nav-btn:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.left-btn { left: 20px; }
+.right-btn { right: 20px; }
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 600px) {
   #shine {
     font-size: 26px;
-    padding: 0 10px;
   }
   .photo {
-    width: 150px;
-    height: 150px;
-  }
-  .photo.enlarged {
-    width: 90vw;
-  }
-  .photo.enlarged .caption {
-    font-size: 15px;
-    padding: 15px;
+    width: 200px; /* Slightly smaller stack on mobile */
+    height: 200px;
   }
   .left-btn { left: 10px; }
   .right-btn { right: 10px; }
