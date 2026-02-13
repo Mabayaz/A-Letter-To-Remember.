@@ -1,0 +1,274 @@
+/* --- RESET & GLOBAL STYLES --- */
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+  align-items: center; 
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  background: #ffeef0;
+  position: relative;
+  padding-top: 40px;
+}
+
+/* --- BACKGROUND SLIDESHOW --- */
+.background {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+
+.background img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.background img.active-bg {
+  opacity: 1;
+}
+
+/* --- BLUR OVERLAY --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    rgba(255, 182, 193, 0.35),
+    rgba(255, 192, 203, 0.35)
+  );
+  backdrop-filter: blur(6px);
+  z-index: -1;
+}
+
+/* --- ANIMATED TITLE (Centered & Stacked) --- */
+#hedlinecontainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+#shine {
+  /* clamp makes it big on PC, smaller on phones so it doesn't break weirdly */
+  font-size: clamp(22px, 4.5vw, 45px); 
+  font-weight: bold;
+  line-height: 1.2; /* Keeps the two lines close together */
+  background: linear-gradient(
+    90deg,
+    #ff8fb1,
+    #ffb3c6,
+    #ffffff,
+    #ffb3c6,
+    #ff8fb1
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shineMove 4s linear infinite;
+  text-align: center; /* This is the key for the centering */
+}
+
+@keyframes shineMove {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+#shine::after {
+  content: " ";
+  display: inline-block;
+  animation: heartbeat 1.4s ease-in-out infinite;
+}
+
+/* --- PHOTO GALLERY STACK --- */
+.gallery {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 90vw;
+  max-height: 70vh;
+  flex-grow: 1;
+}
+
+.photo {
+  position: absolute;
+  width: 200px;
+  max-width: 80vw;
+  height: 200px;
+  max-height: 60vh;
+  display: none;
+  transition: transform 0.4s ease;
+}
+
+.photo.active {
+  display: block;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #fff;
+  border: 10px solid #fff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(255, 105, 135, 0.25);
+  cursor: pointer;
+  transition: 0.4s ease;
+}
+
+/* STACK ROTATION */
+.photo:nth-child(1) { transform: rotate(2deg); }
+.photo:nth-child(2) { transform: rotate(-2deg); }
+.photo:nth-child(3) { transform: rotate(3deg); }
+.photo:nth-child(4) { transform: rotate(-3deg); }
+.photo:nth-child(5) { transform: rotate(1deg); }
+.photo:nth-child(6) { transform: rotate(-1deg); }
+.photo:nth-child(7) { transform: rotate(2deg); }
+.photo:nth-child(8) { transform: rotate(-2deg); }
+.photo:nth-child(9) { transform: rotate(1deg); }
+.photo:nth-child(10){ transform: rotate(-1deg); }
+
+/* --- ENLARGED PHOTO VIEW --- */
+.photo.enlarged {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg) !important;
+  width: 80vw;
+  max-width: 500px;
+  height: auto;
+  max-height: 90vh;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.photo.enlarged img {
+  width: 100%;
+  height: auto;
+  max-height: 55vh;
+  object-fit: contain;
+  border: 8px solid #fff;
+}
+
+.photo.enlarged::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4); 
+  backdrop-filter: blur(8px);
+  z-index: -1;
+}
+
+/* --- ROMANTIC CAPTION STYLING --- */
+.caption {
+  display: none;
+}
+
+.photo.enlarged .caption {
+  display: block;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #fff0f3 100%);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #ffb3c6;
+  border-left: 5px solid #ff8fb1;
+  box-shadow: 0 10px 25px rgba(255, 143, 177, 0.2);
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #5a3e45;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  max-height: 30vh;
+  overflow-y: auto;
+  animation: fadeInText 0.8s ease-out forwards;
+}
+
+.photo.enlarged .caption::before {
+  content: "❦";
+  display: block;
+  font-size: 22px;
+  color: #ff8fb1;
+  margin-bottom: 5px;
+}
+
+@keyframes fadeInText {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.photo.enlarged .caption::-webkit-scrollbar {
+  width: 6px;
+}
+.photo.enlarged .caption::-webkit-scrollbar-thumb {
+  background: #ffb3c6;
+  border-radius: 10px;
+}
+
+/* --- NAVIGATION BUTTONS (EDGE FIXED) --- */
+.nav-btn {
+  position: fixed; /* Changed to fixed to pin to screen edge */
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  font-size: 28px;
+  color: #ff8fb1;
+  cursor: pointer;
+  z-index: 2000; /* High z-index to stay on top */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.nav-btn:hover {
+  background: #ff8fb1;
+  color: white;
+}
+
+.left-btn { left: 20px; } /* Set to screen edge */
+.right-btn { right: 20px; } /* Set to screen edge */
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 600px) {
+  #shine {
+    font-size: 26px;
+    padding: 0 10px;
+  }
+  .photo {
+    width: 150px;
+    height: 150px;
+  }
+  .photo.enlarged {
+    width: 90vw;
+  }
+  .photo.enlarged .caption {
+    font-size: 15px;
+    padding: 15px;
+  }
+  .left-btn { left: 10px; }
+  .right-btn { right: 10px; }
+}
